@@ -3,6 +3,10 @@
 Um projeto desenvolvido na linguagem back-end, Dart, com o Framework, Flutter.
 Tem como finalidade fazer o cadastro de locais que se deseja guardar no aplicativo, para posterior consulta.
 
+Fazendo uso de Recursos Nativos:
+-Câmera;
+-Mapa.
+
 
 ## Getting Started
 
