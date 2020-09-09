@@ -1,7 +1,7 @@
 # projetoconsultorios
 
 Um projeto desenvolvido na linguagem back-end, Dart, com o Framework, Flutter.
-Tem como finalidade fazer o cadastro de locais que se deseja guardar no aplicativo, para posterior consulta.
+Tem como finalidade fazer o cadastro de locais que se deseja guardar no aplicativo, para posterior consulta de sua localização.
 
 Fazendo uso de Recursos Nativos: Câmera; Mapa e Bd local.
 
