@@ -15,3 +15,4 @@ Desenvolvido por:
 
 Finalidade:
 Projeto para a matéria de "Desenvolvimento para Dispositivos Móveis ll".
+Orientação: Profº Pedro Antonio Galvão Júnior.
