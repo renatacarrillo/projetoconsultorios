@@ -1,19 +1,58 @@
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
+import 'package:projetoconsultorios/utils/location_util.dart';
+import 'package:projetoconsultorios/screens/map_screen.dart';
 
 class LocationInput extends StatefulWidget {
+  final Function onSelectPosition;
+
+  LocationInput(this.onSelectPosition);
+
   @override
-  __LocationInputState createState() => __LocationInputState();
+  _LocationInputState createState() => _LocationInputState();
 }
 
-class __LocationInputState extends State<LocationInput> {
+class _LocationInputState extends State<LocationInput> {
   String _previewImageUrl;
 
+  void _showPreview(double lat, double lng) {
+    final staticMapImageUrl = LocationUtil.generateLocationPreviewImage(
+      latitude: lat,
+      longitude: lng,
+    );
+
+    setState(() {
+      _previewImageUrl = staticMapImageUrl;
+    });
+  }
+
   Future<void> _getCurrentUserLocation() async {
-    //instanciando o Location e pegar dentro dele o getLocation
-    final locData = await Location().getLocation();
-    print(locData.latitude);
-    print(locData.longitude);
+    try {
+      final locData = await Location().getLocation();
+
+      _showPreview(locData.latitude, locData.longitude);
+      widget.onSelectPosition(LatLng(
+        locData.latitude,
+        locData.longitude,
+      ));
+    } catch (e) {
+      return;
+    }
+  }
+
+  Future<void> _selectOnMap() async {
+    final LatLng selectedPosition = await Navigator.of(context).push(
+      MaterialPageRoute(
+        fullscreenDialog: true,
+        builder: (ctx) => MapScreen(),
+      ),
+    );
+
+    if (selectedPosition == null) return;
+
+    _showPreview(selectedPosition.latitude, selectedPosition.longitude);
+    widget.onSelectPosition(selectedPosition);
   }
 
   @override
@@ -25,10 +64,13 @@ class __LocationInputState extends State<LocationInput> {
           width: double.infinity,
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            border: Border.all(width: 1, color: Colors.deepOrange),
+            border: Border.all(
+              width: 1,
+              color: Colors.grey,
+            ),
           ),
           child: _previewImageUrl == null
-              ? Text('Nenhuma Localização foi Informada!')
+              ? Text('Localização não informada!')
               : Image.network(
                   _previewImageUrl,
                   fit: BoxFit.cover,
@@ -38,21 +80,18 @@ class __LocationInputState extends State<LocationInput> {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            //botão 1
             FlatButton.icon(
               icon: Icon(Icons.location_on),
               label: Text('Localização Atual'),
               textColor: Theme.of(context).primaryColor,
-              //_getCurrentUserLocation = passando apenas a referência da função
               onPressed: _getCurrentUserLocation,
             ),
-            //botão 2
             FlatButton.icon(
               icon: Icon(Icons.map),
               label: Text('Selecione no Mapa'),
               textColor: Theme.of(context).primaryColor,
-              onPressed: () {},
-            )
+              onPressed: _selectOnMap,
+            ),
           ],
         )
       ],

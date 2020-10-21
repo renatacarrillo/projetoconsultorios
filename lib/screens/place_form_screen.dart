@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:projetoconsultorios/providers/projetoconsultorios.dart';
 import 'package:projetoconsultorios/widgets/image_input.dart';
 import 'package:projetoconsultorios/widgets/location_input.dart';
@@ -13,20 +14,36 @@ class PlaceFormScreen extends StatefulWidget {
 class _PlaceFormScreenState extends State<PlaceFormScreen> {
   final _titleController = TextEditingController();
   File _pickedImage;
+  LatLng _pickedPosition;
 
   void _selectImage(File pickedImage) {
-    _pickedImage = pickedImage;
+    setState(() {
+      _pickedImage = pickedImage;
+    });
+  }
+
+  void _selectPosition(LatLng position) {
+    setState(() {
+      _pickedPosition = position;
+    });
+  }
+
+  bool _isValidForm() {
+    return _titleController.text.isNotEmpty &&
+        _pickedImage != null &&
+        _pickedPosition != null;
   }
 
   //método visível somente dentro dessa classe
   void _submitForm() {
     //verificar se realmente os dados vieram de forma correta
-    if (_titleController.text.isEmpty || _pickedImage == null) {
-      return; //se não foi, entra aqui
-    }
+    if (!_isValidForm()) return; //se não foi, entra aqui
 
-    Provider.of<ProjetoConsultorios>(context, listen: false)
-        .addPlace(_titleController.text, _pickedImage);
+    Provider.of<ProjetoConsultorios>(context, listen: false).addPlace(
+      _titleController.text,
+      _pickedImage,
+      _pickedPosition,
+    );
 
     //se foi entra aqui e volta para a tela anterior
     Navigator.of(context).pop();
@@ -58,7 +75,7 @@ class _PlaceFormScreenState extends State<PlaceFormScreen> {
                     SizedBox(height: 10),
                     ImageInput(this._selectImage),
                     SizedBox(height: 10),
-                    LocationInput(),
+                    LocationInput(this._selectPosition),
                   ],
                 ),
               ),
@@ -66,13 +83,14 @@ class _PlaceFormScreenState extends State<PlaceFormScreen> {
           ),
           RaisedButton.icon(
             icon: Icon(Icons.add),
-            label: Text('Cadastrar Consultório'),
+            label: Text('CADASTRAR CONSULTÓRIO'),
             color: Theme.of(context).accentColor,
+
             //ajustes para encostar o botão na parte inferior da tela
             elevation: 0,
             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
             //vai chamar o método quando clicar no botão
-            onPressed: _submitForm,
+            onPressed: _isValidForm() ? _submitForm : null,
           ),
         ],
       ),

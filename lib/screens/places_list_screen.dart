@@ -8,14 +8,22 @@ class PlacesListScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Meus Consultórios'),
+        title: Text(
+          'MEUS CONSULTÓRIOS',
+          style: TextStyle(color: Color(0xFF00FFFF)),
+        ),
+        titleSpacing: 20,
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.add),
+            icon: Icon(
+              Icons.add_location,
+              color: Colors.lightGreenAccent[400],
+            ),
+            iconSize: 40,
             onPressed: () {
               Navigator.of(context).pushNamed(AppRoutes.PLACE_FORM);
             },
-          )
+          ),
         ],
       ),
       body: FutureBuilder(
@@ -26,24 +34,30 @@ class PlacesListScreen extends StatelessWidget {
             ? Center(child: CircularProgressIndicator())
             : Consumer<ProjetoConsultorios>(
                 child: Center(
-                  child: Text(
-                      'Por enquanto não tem nenhum consultório cadastrado!'),
+                  child: Text('Nenhum local cadastrado!'),
                 ),
-                builder: (ctx, projetoConsultorios, ch) => projetoConsultorios
-                            .itemsCount ==
-                        0
+                builder: (ctx, greatPlaces, ch) => greatPlaces.itemsCount == 0
                     ? ch
                     : ListView.builder(
-                        itemCount: projetoConsultorios.itemsCount,
+                        itemCount: greatPlaces.itemsCount,
                         itemBuilder: (ctx, i) => ListTile(
                           leading: CircleAvatar(
-                            //pegando a imagem
                             backgroundImage: FileImage(
-                                projetoConsultorios.itemByIndex(i).image),
+                              greatPlaces.itemByIndex(i).image,
+                            ),
                           ),
-                          //pegando o título
-                          title: Text(projetoConsultorios.itemByIndex(i).title),
-                          onTap: () {},
+                          title: Text(
+                            greatPlaces.itemByIndex(i).title,
+                            // textAlign: TextAlign.start,
+                          ),
+                          subtitle:
+                              Text(greatPlaces.itemByIndex(i).location.address),
+                          onTap: () {
+                            Navigator.of(context).pushNamed(
+                              AppRoutes.PLACE_DETAIL,
+                              arguments: greatPlaces.itemByIndex(i),
+                            );
+                          },
                         ),
                       ),
               ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:projetoconsultorios/providers/projetoconsultorios.dart';
+import 'package:projetoconsultorios/screens/place_detail_screen.dart';
 import 'package:projetoconsultorios/screens/place_form_screen.dart';
 import 'package:projetoconsultorios/screens/places_list_screen.dart';
 import 'package:projetoconsultorios/utils/app_routes.dart';
@@ -18,13 +19,14 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Consultórios Médicos',
         theme: ThemeData(
-          primarySwatch: Colors.teal,
-          accentColor: Colors.deepOrange,
+          primarySwatch: Colors.deepOrange,
+          accentColor: Colors.teal,
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
         home: PlacesListScreen(),
         routes: {
           AppRoutes.PLACE_FORM: (ctx) => PlaceFormScreen(),
+          AppRoutes.PLACE_DETAIL: (ctx) => PlaceDetailScreen(),
         },
       ),
     );
